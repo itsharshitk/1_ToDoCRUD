@@ -47,8 +47,18 @@ func ConnectDB() error {
 
 	fmt.Println("Database Connected Successfully")
 
-	if err := Db.AutoMigrate(&model.User{}); err != nil {
-		log.Fatal("Failed to Automigrate", err)
+	// if err := Db.AutoMigrate(&model.User{}); err != nil {
+	// 	log.Fatalf("Failed to Automigrate User: %v", err)
+	// 	return err
+	// }
+
+	allModels := []any{
+		&model.User{},
+		&model.Todo{},
+	}
+
+	if err := Db.AutoMigrate(allModels...); err != nil {
+		log.Fatalf("Failed to Automigrate: %v", err)
 		return err
 	}
 
