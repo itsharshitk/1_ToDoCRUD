@@ -9,13 +9,14 @@ import (
 )
 
 func UserProfile(c *gin.Context) {
-	userId := c.GetUint("userId")
+	userId := c.GetUint("id")
 
 	var user model.User
 
 	result := config.Db.Where("id = ?", userId).First(&user)
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "User Not Found"})
+		return
 	}
 
 	updatedDate := user.UpdatedAt.Format("01-02-2006")

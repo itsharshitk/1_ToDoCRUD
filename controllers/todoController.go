@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/itsharshitk/1_ToDoCRUD/config"
 	"github.com/itsharshitk/1_ToDoCRUD/model"
+	"gorm.io/gorm"
 )
 
 func AddTask(c *gin.Context) {
@@ -47,6 +48,31 @@ func GetTasks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, tasks)
 
+}
+
+func TasksById(c *gin.Context) {
+	userId := c.GetUint("id")
+	taskId := c.Param("id")
+	var task model.Todo
+
+	result := config.Db.Where("id = ?", taskId).Where("user_id = ?", userId).First(&task)
+
+	if result.Error != nil {
+		if gorm.ErrRecordNotFound != nil {
+			c.JSON(http.StatusBadRequest, &model.ErrorResponse{
+				Status:  http.StatusBadRequest,
+				Message: "Task not found",
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, &model.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Something went wrong: " + result.Error.Error(),
+		})
+	}
+
+	c.JSON(http.StatusOK, task)
 }
 
 func UpdateTask(c *gin.Context) {
