@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/itsharshitk/1_ToDoCRUD/config"
 	"github.com/itsharshitk/1_ToDoCRUD/model"
+	"gorm.io/gorm"
 )
 
 func AddTask(c *gin.Context) {
@@ -37,15 +39,50 @@ func GetTasks(c *gin.Context) {
 	var tasks []model.Todo
 	id := c.GetUint("id")
 
-	if err := config.Db.Where("user_id = ?", id).Find(&tasks).Error; err != nil {
+	result := config.Db.Where("user_id = ?", id).Find(&tasks).Error
+
+	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, &model.ErrorResponse{
 			Status:  http.StatusInternalServerError,
-			Message: "Something Went Wrong: " + err.Error(),
+			Message: "Something went wrong: " + result.Error(),
 		})
 		return
 	}
 
+	// If no tasks are found, you can return an empty array or a specific message
+	if len(tasks) == 0 {
+		c.JSON(http.StatusOK, []model.Todo{}) // Return an empty array
+		return
+	}
+
 	c.JSON(http.StatusOK, tasks)
+
+}
+
+func TaskById(c *gin.Context) {
+	taskId := c.Param("id")
+	userId := c.GetUint("id")
+	var task model.Todo
+
+	result := config.Db.Where("id = ?", taskId).Where("user_id = ?", userId).First(&task)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, &model.ErrorResponse{
+				Status:  http.StatusNotFound,
+				Message: "Task not found",
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, &model.ErrorResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "Something went wrong: " + result.Error.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
 
 }
 

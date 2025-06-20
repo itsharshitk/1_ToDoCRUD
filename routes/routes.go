@@ -15,6 +15,7 @@ func ApiRoutes(r *gin.Engine) {
 		v1.GET("/profile", controllers.UserProfile)
 		v1.POST("/task", controllers.AddTask)
 		v1.GET("/task", controllers.GetTasks)
+		v1.GET("/task/:id", controllers.TaskById)
 		v1.PUT("/task", controllers.UpdateTask)
 		v1.DELETE("/task/:id", controllers.DeleteTask)
 	}
