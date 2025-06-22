@@ -11,6 +11,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Signup godoc
+// @Summary      Register a new user
+// @Description  Creates a new user with name, email and password
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        user  body      model.User  true  "User Data"
+// @Success      200   {object}  model.UserResponse
+// @Failure      400   {object}  model.APIResponse
+// @Router       /signup [post]
 func Signup(c *gin.Context) {
 	var req model.User
 	var foundUser model.User
@@ -63,8 +73,18 @@ func Signup(c *gin.Context) {
 
 }
 
+// Login godoc
+// @Summary      Login existing user
+// @Description  Authenticates a user and returns JWT token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        credentials  body      model.LoginRequest  true  "Login credentials"
+// @Success      200   {object}  model.UserResponse
+// @Failure      400   {object}  model.APIResponse
+// @Router       /login [post]
 func Login(c *gin.Context) {
-	var req model.User
+	var req model.LoginRequest
 	var foundUser model.User
 
 	db := config.Db
@@ -103,14 +123,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, &model.APIResponse{
-		Status:  http.StatusOK,
+	c.JSON(http.StatusOK, &model.UserResponse{
+		ID:      foundUser.ID,
+		Name:    foundUser.Name,
+		Email:   foundUser.Email,
 		Message: "Login Successful",
-		Data: model.UserResponse{
-			ID:    foundUser.ID,
-			Name:  foundUser.Name,
-			Email: foundUser.Email,
-			Token: token,
-		},
-	})
+		Token:   token,
+	},
+	)
 }

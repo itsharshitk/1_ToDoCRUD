@@ -1,0 +1,309 @@
+basePath: /
+definitions:
+  model.APIResponse:
+    properties:
+      data: {}
+      error_code:
+        type: string
+      error_details: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  model.LoginRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: Strongpassword@123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.Todo:
+    properties:
+      created_at:
+        description: Task creation timestamp
+        example: "2025-06-23T12:00:00Z"
+        type: string
+      description:
+        description: Optional task description
+        example: Buy milk and bread
+        maxLength: 255
+        type: string
+      id:
+        description: Unique identifier
+        example: 1
+        type: integer
+      is_complete:
+        description: Completion status
+        example: false
+        type: boolean
+      title:
+        description: Task title
+        example: Buy groceries
+        maxLength: 255
+        minLength: 2
+        type: string
+      updated_at:
+        description: Task update timestamp
+        example: "2025-06-23T12:30:00Z"
+        type: string
+      user_id:
+        description: ID of the user who owns the task
+        example: 10
+        type: integer
+    required:
+    - title
+    - user_id
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        maxLength: 100
+        minLength: 2
+        type: string
+      password:
+        type: string
+      todo:
+        items:
+          $ref: '#/definitions/model.Todo'
+        type: array
+      updated_at:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  model.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      message:
+        type: string
+      name:
+        type: string
+      token:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is a sample server for a ToDo CRUD app.
+  title: ToDo CRUD API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Login existing user
+      tags:
+      - Auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with name, email and password
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      summary: Register a new user
+      tags:
+      - Auth
+  /task:
+    get:
+      description: Fetch all tasks of a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user's tasks
+      tags:
+      - ToDo
+    post:
+      consumes:
+      - application/json
+      description: Adds a new task by title and description
+      parameters:
+      - description: Todo data
+        in: body
+        name: tasks
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Add new Task
+      tags:
+      - ToDo
+  /task/{id}:
+    delete:
+      description: Deletes a task by its ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete task
+      tags:
+      - ToDo
+    get:
+      description: Returns a single task for the given ID belonging to the user
+      parameters:
+      - description: Task ID
+        in: path
+        name: Id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Todo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get Task by Id
+      tags:
+      - ToDo
+    put:
+      consumes:
+      - application/json
+      description: Update a task's title, description, and completion status
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated task data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/model.Todo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Update existing task
+      tags:
+      - ToDo
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer <your-jwt-token>" to authenticate.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

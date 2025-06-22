@@ -9,6 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// AddTaskTest godoc
+// @Summary      Add new Task
+// @Description  Adds a new task by title and description
+// @Tags         ToDo
+// @Accept       json
+// @Produce      json
+// @Param        tasks  body      model.Todo  true  "Todo data"
+// @Success      201   {object}  model.APIResponse
+// @Failure      500   {object}  model.APIResponse
+// @Security     BearerAuth
+// @Router       /task [post]
 func AddTask(c *gin.Context) {
 	var tasks model.Todo
 	if err := c.ShouldBindJSON(&tasks); err != nil {
@@ -37,6 +48,15 @@ func AddTask(c *gin.Context) {
 	})
 }
 
+// GetTasks godoc
+// @Summary      Get user's tasks
+// @Description  Fetch all tasks of a user
+// @Tags         ToDo
+// @Produce      json
+// @Success      200   {object}  model.Todo
+// @Failure      500   {object}  model.APIResponse
+// @Security     BearerAuth
+// @Router       /task [get]
 func GetTasks(c *gin.Context) {
 	var tasks []model.Todo
 	id := c.GetUint("id")
@@ -54,6 +74,17 @@ func GetTasks(c *gin.Context) {
 
 }
 
+// TasksById godoc
+// @Summary      Get Task by Id
+// @Description  Returns a single task for the given ID belonging to the user
+// @Tags         ToDo
+// @Produce      json
+// @Param        Id path int true "Task ID"
+// @Success      200   {object}  model.Todo
+// @Failure      400   {object}  model.APIResponse
+// @Failure      500   {object}  model.APIResponse
+// @Security     BearerAuth
+// @Router       /task/{id} [get]
 func TasksById(c *gin.Context) {
 	userId := c.GetUint("id")
 	taskId := c.Param("id")
@@ -80,6 +111,20 @@ func TasksById(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
+// UpdateTask godoc
+// @Summary      Update existing task
+// @Description  Update a task's title, description, and completion status
+// @Tags         ToDo
+// @Accept       json
+// @Produce      json
+// @Param        id    path      int        true  "Task ID"
+// @Param        task  body      model.Todo  true  "Updated task data"
+// @Success      200   {object}  model.APIResponse
+// @Failure      400   {object}  model.APIResponse
+// @Failure      404   {object}  model.APIResponse
+// @Failure      500   {object}  model.APIResponse
+// @Security     BearerAuth
+// @Router       /task/{id} [put]
 func UpdateTask(c *gin.Context) {
 	var task model.Todo
 	task_id := c.Param("id")
@@ -137,6 +182,17 @@ func UpdateTask(c *gin.Context) {
 	})
 }
 
+// DeleteTask godoc
+// @Summary      Delete task
+// @Description  Deletes a task by its ID
+// @Tags         ToDo
+// @Produce      json
+// @Param        id   path      int  true  "Task ID"
+// @Success      200  {object}  model.APIResponse
+// @Failure      404  {object}  model.APIResponse
+// @Failure      500  {object}  model.APIResponse
+// @Security     BearerAuth
+// @Router       /task/{id} [delete]
 func DeleteTask(c *gin.Context) {
 	id := c.Param("id")
 	var task model.Todo

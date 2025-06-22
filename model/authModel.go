@@ -32,3 +32,8 @@ type CustomClaims struct {
 	Email string `json:"email"`
 	jwt.StandardClaims
 }
+
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email" example:"user@example.com"`
+	Password string `json:"password" validate:"required" example:"Strongpassword@123"`
+}
