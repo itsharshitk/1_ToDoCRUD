@@ -64,7 +64,3 @@ func ConnectDB() error {
 
 	return nil
 }
-
-func GetDB() *gorm.DB {
-	return Db
-}
