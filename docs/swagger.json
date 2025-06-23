@@ -4,7 +4,7 @@
         "description": "This is a sample server for a ToDo CRUD app.",
         "title": "ToDo CRUD API",
         "contact": {},
-        "version": "1.0"
+        "version": "1.1"
     },
     "host": "localhost:8000",
     "basePath": "/",

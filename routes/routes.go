@@ -4,11 +4,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/itsharshitk/1_ToDoCRUD/controllers"
 	"github.com/itsharshitk/1_ToDoCRUD/middleware"
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // swagger handler
+
+	_ "github.com/itsharshitk/1_ToDoCRUD/docs" // generated docs
 )
 
 func ApiRoutes(r *gin.Engine) {
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
+
+	// Swagger route
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.Group("/", middleware.AuthMiddleware())
 	{
