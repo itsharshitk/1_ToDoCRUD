@@ -9,13 +9,21 @@ import (
 
 type User struct {
 	ID        uint           `gorm:"primaryKey" json:"id"`
-	Name      string         `json:"name"`
-	Email     string         `gorm:"uniqueIndex" json:"email"`
-	Password  string         `json:"password"`
+	Name      string         `json:"name" validate:"required,min=2,max=100"`
+	Email     string         `gorm:"uniqueIndex" json:"email" validate:"required,email"`
+	Password  string         `json:"password" validate:"required,customPassVal"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 	Todo      []Todo         `gorm:"foreignKey:UserId"`
+}
+
+type UserResponse struct {
+	ID      uint   `json:"id"`
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Message string `json:"message,omitempty"`
+	Token   string `json:"token,omitempty"`
 }
 
 type CustomClaims struct {
@@ -23,4 +31,9 @@ type CustomClaims struct {
 	Name  string `json:"name"`
 	Email string `json:"email"`
 	jwt.StandardClaims
+}
+
+type LoginRequest struct {
+	Email    string `json:"email" validate:"required,email" example:"user@example.com"`
+	Password string `json:"password" validate:"required" example:"Strongpassword@123"`
 }

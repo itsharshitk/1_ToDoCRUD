@@ -9,21 +9,22 @@ import (
 )
 
 func UserProfile(c *gin.Context) {
-	userId := c.GetUint("userId")
+	userId := c.GetUint("id")
 
 	var user model.User
 
 	result := config.Db.Where("id = ?", userId).First(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "User Not Found"})
+		c.JSON(http.StatusInternalServerError, model.APIResponse{
+			Status:  http.StatusInternalServerError,
+			Message: "User Not Found",
+		})
+		return
 	}
 
-	updatedDate := user.UpdatedAt.Format("01-02-2006")
-
-	c.JSON(http.StatusOK, gin.H{
-		"id":           user.ID,
-		"name":         user.Name,
-		"email":        user.Email,
-		"last_updated": updatedDate,
+	c.JSON(http.StatusOK, model.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
 	})
 }
