@@ -14,13 +14,31 @@ definitions:
   model.LoginRequest:
     properties:
       email:
-        example: user@example.com
+        example: harshit@yopmail.com
         type: string
       password:
-        example: Strongpassword@123
+        example: Admin@123
         type: string
     required:
     - email
+    - password
+    type: object
+  model.SignupRequest:
+    properties:
+      email:
+        example: harshit@yopmail.com
+        type: string
+      name:
+        example: Harshit Katiyar
+        maxLength: 100
+        minLength: 2
+        type: string
+      password:
+        example: Admin@123
+        type: string
+    required:
+    - email
+    - name
     - password
     type: object
   model.Todo:
@@ -59,31 +77,6 @@ definitions:
     required:
     - title
     - user_id
-    type: object
-  model.User:
-    properties:
-      created_at:
-        type: string
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        maxLength: 100
-        minLength: 2
-        type: string
-      password:
-        type: string
-      todo:
-        items:
-          $ref: '#/definitions/model.Todo'
-        type: array
-      updated_at:
-        type: string
-    required:
-    - email
-    - name
-    - password
     type: object
   model.UserResponse:
     properties:
@@ -142,7 +135,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/model.SignupRequest'
       produces:
       - application/json
       responses:

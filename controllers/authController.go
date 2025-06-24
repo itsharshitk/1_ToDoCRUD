@@ -17,12 +17,12 @@ import (
 // @Tags         Auth
 // @Accept       json
 // @Produce      json
-// @Param        user  body      model.User  true  "User Data"
+// @Param        user  body      model.SignupRequest  true  "User Data"
 // @Success      200   {object}  model.UserResponse
 // @Failure      400   {object}  model.APIResponse
 // @Router       /signup [post]
 func Signup(c *gin.Context) {
-	var req model.User
+	var req model.SignupRequest
 	var foundUser model.User
 
 	db := config.Db
@@ -55,7 +55,13 @@ func Signup(c *gin.Context) {
 
 	req.Password = utils.HashPassword(req.Password)
 
-	if err := db.Create(&req).Error; err != nil {
+	newUser := model.User{
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: req.Password,
+	}
+
+	if err := db.Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, model.APIResponse{
 			Status:  http.StatusInternalServerError,
 			Message: "Can't create user",
@@ -65,9 +71,9 @@ func Signup(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model.UserResponse{
-		ID:      req.ID,
-		Name:    req.Name,
-		Email:   req.Email,
+		ID:      newUser.ID,
+		Name:    newUser.Name,
+		Email:   newUser.Email,
 		Message: "User Created Successfully",
 	})
 
