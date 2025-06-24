@@ -34,6 +34,12 @@ type CustomClaims struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" validate:"required,email" example:"user@example.com"`
-	Password string `json:"password" validate:"required" example:"Strongpassword@123"`
+	Email    string `json:"email" validate:"required,email" example:"harshit@yopmail.com"`
+	Password string `json:"password" validate:"required" example:"Admin@123"`
+}
+
+type SignupRequest struct {
+	Name     string `json:"name" validate:"required,min=2,max=100" example:"Harshit Katiyar"`
+	Email    string `json:"email" validate:"required,email" example:"harshit@yopmail.com"`
+	Password string `json:"password" validate:"required" example:"Admin@123"`
 }

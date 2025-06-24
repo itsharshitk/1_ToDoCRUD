@@ -69,7 +69,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.SignupRequest"
                         }
                     }
                 ],
@@ -342,11 +342,35 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "user@example.com"
+                    "example": "harshit@yopmail.com"
                 },
                 "password": {
                     "type": "string",
-                    "example": "Strongpassword@123"
+                    "example": "Admin@123"
+                }
+            }
+        },
+        "model.SignupRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "harshit@yopmail.com"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 2,
+                    "example": "Harshit Katiyar"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "Admin@123"
                 }
             }
         },
@@ -394,42 +418,6 @@
                     "description": "ID of the user who owns the task",
                     "type": "integer",
                     "example": 10
-                }
-            }
-        },
-        "model.User": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "password"
-            ],
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 100,
-                    "minLength": 2
-                },
-                "password": {
-                    "type": "string"
-                },
-                "todo": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Todo"
-                    }
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
