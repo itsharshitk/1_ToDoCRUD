@@ -11,6 +11,20 @@ definitions:
       status:
         type: integer
     type: object
+  model.AddTaskRequest:
+    properties:
+      description:
+        example: Buy milk and bread
+        maxLength: 255
+        type: string
+      title:
+        example: Buy groceries
+        maxLength: 255
+        minLength: 2
+        type: string
+    required:
+    - title
+    type: object
   model.LoginRequest:
     properties:
       email:
@@ -44,35 +58,23 @@ definitions:
   model.Todo:
     properties:
       created_at:
-        description: Task creation timestamp
         example: "2025-06-23T12:00:00Z"
         type: string
       description:
-        description: Optional task description
-        example: Buy milk and bread
         maxLength: 255
         type: string
       id:
-        description: Unique identifier
-        example: 1
         type: integer
       is_complete:
-        description: Completion status
-        example: false
         type: boolean
       title:
-        description: Task title
-        example: Buy groceries
         maxLength: 255
         minLength: 2
         type: string
       updated_at:
-        description: Task update timestamp
         example: "2025-06-23T12:30:00Z"
         type: string
       user_id:
-        description: ID of the user who owns the task
-        example: 10
         type: integer
     required:
     - title
@@ -179,7 +181,7 @@ paths:
         name: tasks
         required: true
         schema:
-          $ref: '#/definitions/model.Todo'
+          $ref: '#/definitions/model.AddTaskRequest'
       produces:
       - application/json
       responses:

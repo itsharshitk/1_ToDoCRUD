@@ -15,13 +15,13 @@ import (
 // @Tags         ToDo
 // @Accept       json
 // @Produce      json
-// @Param        tasks  body      model.Todo  true  "Todo data"
+// @Param        tasks  body      model.AddTaskRequest  true  "Todo data"
 // @Success      201   {object}  model.APIResponse
 // @Failure      500   {object}  model.APIResponse
 // @Security     BearerAuth
 // @Router       /task [post]
 func AddTask(c *gin.Context) {
-	var tasks model.Todo
+	var tasks model.AddTaskRequest
 	if err := c.ShouldBindJSON(&tasks); err != nil {
 		c.JSON(http.StatusBadRequest, &model.APIResponse{
 			Status:  http.StatusBadRequest,
@@ -30,9 +30,14 @@ func AddTask(c *gin.Context) {
 		})
 		return
 	}
-	tasks.UserId = c.GetUint("id")
 
-	if err := config.Db.Create(&tasks).Error; err != nil {
+	newTask := model.Todo{
+		UserId:      c.GetUint("id"),
+		Title:       tasks.Title,
+		Description: tasks.Description,
+	}
+
+	if err := config.Db.Create(&newTask).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, &model.APIResponse{
 			Status:  http.StatusInternalServerError,
 			Message: "Something Went Wrong",
@@ -44,7 +49,7 @@ func AddTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, &model.APIResponse{
 		Status:  http.StatusCreated,
 		Message: "Task Added Successfully",
-		Data:    map[string]uint{"task_id": tasks.ID},
+		Data:    newTask,
 	})
 }
 
@@ -96,7 +101,7 @@ func TasksById(c *gin.Context) {
 	taskId := c.Param("id")
 	var task model.Todo
 
-	result := config.Db.Where("id = ?", taskId).Where("user_id = ?", userId).First(&task)
+	result := config.Db.Where("id = ? AND user_id = ?", taskId, userId).First(&task)
 
 	if result.Error != nil {
 		if gorm.ErrRecordNotFound != nil {

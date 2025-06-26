@@ -15,6 +15,9 @@ func ApiRoutes(r *gin.Engine) {
 	r.POST("/login", controllers.Login)
 
 	// Swagger route
+	r.GET("/swagger", func(c *gin.Context) {
+		c.Redirect(301, "/swagger/index.html")
+	})
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	v1 := r.Group("/", middleware.AuthMiddleware())

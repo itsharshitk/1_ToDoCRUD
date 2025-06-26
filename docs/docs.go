@@ -149,7 +149,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.Todo"
+                            "$ref": "#/definitions/model.AddTaskRequest"
                         }
                     }
                 ],
@@ -339,6 +339,25 @@ const docTemplate = `{
                 }
             }
         },
+        "model.AddTaskRequest": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Buy milk and bread"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 2,
+                    "example": "Buy groceries"
+                }
+            }
+        },
         "model.LoginRequest": {
             "type": "object",
             "required": [
@@ -388,42 +407,30 @@ const docTemplate = `{
             ],
             "properties": {
                 "created_at": {
-                    "description": "Task creation timestamp",
                     "type": "string",
                     "example": "2025-06-23T12:00:00Z"
                 },
                 "description": {
-                    "description": "Optional task description",
                     "type": "string",
-                    "maxLength": 255,
-                    "example": "Buy milk and bread"
+                    "maxLength": 255
                 },
                 "id": {
-                    "description": "Unique identifier",
-                    "type": "integer",
-                    "example": 1
+                    "type": "integer"
                 },
                 "is_complete": {
-                    "description": "Completion status",
-                    "type": "boolean",
-                    "example": false
+                    "type": "boolean"
                 },
                 "title": {
-                    "description": "Task title",
                     "type": "string",
                     "maxLength": 255,
-                    "minLength": 2,
-                    "example": "Buy groceries"
+                    "minLength": 2
                 },
                 "updated_at": {
-                    "description": "Task update timestamp",
                     "type": "string",
                     "example": "2025-06-23T12:30:00Z"
                 },
                 "user_id": {
-                    "description": "ID of the user who owns the task",
-                    "type": "integer",
-                    "example": 10
+                    "type": "integer"
                 }
             }
         },
